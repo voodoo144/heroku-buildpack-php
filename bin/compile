@@ -13,7 +13,7 @@ heroku_rev='-2'
 
 # config
 MCRYPT_VERSION="2.5.8"
-APACHE_VERSION="2.2.25"
+APACHE_VERSION="2.2.26"
 APACHE_PATH="apache"
 PHP_VERSION="5.3.27"
 PHP_PATH="php"
@@ -47,14 +47,14 @@ curl --silent --max-time 60 --location "$MCRYPT_URL" | tar xz
 #curl --silent --max-time 60 --location "$APACHE_URL" | tar xz
 
     # Take care of vendoring Apache.
-    httpd_version=2.2.25
+    httpd_version=2.2.26
     httpd_dirname=httpd-$httpd_version
     httpd_archive_name=$httpd_dirname.tar.bz2
 
     # Download Apache if necessary.
     if [ ! -f $httpd_archive_name ]
     then
-        curl -LO ftp://ftp.osuosl.org/pub/apache//httpd/$httpd_archive_name
+        curl -LO ftp://ftp.osuosl.org/pub/apache/httpd/$httpd_archive_name
     fi
 
     # Clean and extract Apache.
