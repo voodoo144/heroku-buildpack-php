@@ -38,16 +38,19 @@ if [ -f www/Procfile ]; then
   mv www/Procfile .
 fi
 
-MCRYPT_URL="https://heroku-buildpack-php.s3.amazonaws.com/mcrypt-""$MCRYPT_VERSION""$heroku_rev"".tar.gz"
+MCRYPT_URL="https://raw.github.com/voodoo144/heroku-buildpack-php/master/distr/mcrypt-""$MCRYPT_VERSION""$heroku_rev"".tar.gz"
 echo "-----> Bundling mcrypt version $MCRYPT_VERSION"
+echo "-----> Get mcrypt from $MCRYPT_URL"
 curl --silent --max-time 60 --location "$MCRYPT_URL" | tar xz
 
-APACHE_URL="https://heroku-buildpack-php.s3.amazonaws.com/apache-""$APACHE_VERSION""$heroku_rev"".tar.gz"
+APACHE_URL="https://raw.github.com/voodoo144/heroku-buildpack-php/master/distr/apache-""$APACHE_VERSION""$heroku_rev"".tar.gz"
 echo "-----> Bundling Apache version $APACHE_VERSION"
+echo "-----> Get apache from $APACHE_URL"
 curl --silent --max-time 60 --location "$APACHE_URL" | tar xz
 
-PHP_URL="https://heroku-buildpack-php.s3.amazonaws.com/php-$PHP_VERSION""$heroku_rev"".tar.gz"
+PHP_URL="https://raw.github.com/voodoo144/heroku-buildpack-php/master/distr/php-$PHP_VERSION""$heroku_rev"".tar.gz"
 echo "-----> Bundling PHP version $PHP_VERSION"
+echo "-----> Get php from $PHP_URL"
 curl --silent --max-time 60 --location "$PHP_URL" | tar xz
 
 # update config files
