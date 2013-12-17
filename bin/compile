@@ -46,9 +46,35 @@ APACHE_URL="https://heroku-buildpack-php.s3.amazonaws.com/apache-""$APACHE_VERSI
 echo "-----> Bundling Apache version $APACHE_VERSION"
 curl --silent --max-time 60 --location "$APACHE_URL" | tar xz
 
-PHP_URL="https://heroku-buildpack-php.s3.amazonaws.com/php-$PHP_VERSION""$heroku_rev"".tar.gz"
-echo "-----> Bundling PHP version $PHP_VERSION"
-curl --silent --max-time 60 --location "$PHP_URL" | tar xz
+#PHP_URL="https://heroku-buildpack-php.s3.amazonaws.com/php-$PHP_VERSION""$heroku_rev"".tar.gz"
+#echo "-----> Bundling PHP version $PHP_VERSION"
+#curl --silent --max-time 60 --location "$PHP_URL" | tar xz
+
+# Take care of vendoring PHP.
+    php_version=5.3.27
+    php_dirname=php-$php_version
+    php_archive_name=$php_dirname.tar.bz2
+
+    # Download PHP if necessary.
+    if [ ! -f $php_archive_name ]
+    then
+        curl -Lo $php_archive_name http://us1.php.net/get/php-5.3.27.tar.bz2/from/www.php.net/mirror
+    fi
+
+    # Clean and extract PHP.
+    rm -rf $php_dirname
+    tar jxf $php_archive_name
+
+    # Compile PHP
+    pushd $php_dirname
+    ./configure --prefix=/app/php --enable-mbstring --with-apxs2=/app/apache/bin/apxs     \
+    --with-mysql --with-pdo-mysql --with-pgsql --with-pdo-pgsql         \
+    --with-iconv --with-gd --with-curl=/usr/lib                         \
+    --with-config-file-path=/app/php --enable-soap=shared               \
+    --with-openssl --with-mcrypt=/app/vendor/mcrypt --enable-sockets
+    make -s
+    make install -s
+    popd
 
 # update config files
 cp $LP_DIR/conf/httpd.conf $APACHE_PATH/conf
