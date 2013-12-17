@@ -113,8 +113,8 @@ fi
     popd
 
 # update config files
-cp $LP_DIR/conf/httpd.conf $APACHE_PATH/conf
-cp $LP_DIR/conf/php.ini php
+cp $LP_DIR/conf/httpd.conf /app/apache/conf
+cp $LP_DIR/conf/php.ini /app/php
 
 # make php available on bin
 mkdir -p bin
