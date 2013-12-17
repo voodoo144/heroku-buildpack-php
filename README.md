@@ -97,7 +97,7 @@ can be downloaded by the build pack (see the URIs in `compile`).
 
     # Compile PHP
     pushd $php_dirname
-    ./configure --prefix=/app/php --with-apxs2=/app/apache/bin/apxs     \
+    ./configure --prefix=/app/php --enable-mbstring --with-apxs2=/app/apache/bin/apxs     \
     --with-mysql --with-pdo-mysql --with-pgsql --with-pdo-pgsql         \
     --with-iconv --with-gd --with-curl=/usr/lib                         \
     --with-config-file-path=/app/php --enable-soap=shared               \
