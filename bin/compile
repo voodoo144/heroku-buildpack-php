@@ -59,6 +59,9 @@ echo "-----> Bundling Mongo version $MONGO_VERSION"
 echo "-----> Get Mongo from $MONGO_URL"
 curl --silent --max-time 60 --location "$MONGO_URL" | tar xz
 
+#Rename mongo dir
+mv mongodb-linux-x86_64-$MONGO_VERSION mongo
+
 # update config files
 cp $LP_DIR/conf/httpd.conf $APACHE_PATH/conf
 cp $LP_DIR/conf/php.ini php
