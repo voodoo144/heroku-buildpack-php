@@ -101,6 +101,9 @@
     #Install mongo
     yes '' | /app/php/bin/pecl install mongo
 
+    #Install zip
+    yes '' | /app/php/bin/pecl install zip
+
     # Sanitize default cgi-bin to rid oneself of Apache sample
     # programs.
     find /app/apache/cgi-bin/ -mindepth 1 -print0 | xargs -0 rm -r

@@ -76,10 +76,6 @@ cp $LP_DIR/conf/php.ini php
 mkdir -p bin
 ln -s /app/php/bin/php bin/php
 
-echo "-----> Installing zip extension"
-$BUILD_DIR/bin/pecl install zip
-echo "-----> Zip installed"
-
 if [ -f www/composer.json ] && [ ! -d www/vendor ]; then
   GIT_DIR_ORIG=$GIT_DIR
   unset GIT_DIR
