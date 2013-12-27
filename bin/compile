@@ -65,10 +65,20 @@ mkdir vim && tar xzvf vim.tar.gz -C vim
 rm -rf vim.tar.gz
 echo "-----> Vim installed"
 
-echo "-----> Installing zip extension"
-php/bin/pecl install zip
-echo "-----> Zip installed"
+#Rename mongo dir
+mv mongodb-linux-x86_64-$MONGO_VERSION mongo
 
+# update config files
+cp $LP_DIR/conf/httpd.conf $APACHE_PATH/conf
+cp $LP_DIR/conf/php.ini php
+
+# make php available on bin
+mkdir -p bin
+ln -s /app/php/bin/php bin/php
+
+echo "-----> Installing zip extension"
+/app/php/bin/pecl install zip
+echo "-----> Zip installed"
 
 if [ -f www/composer.json ] && [ ! -d www/vendor ]; then
   GIT_DIR_ORIG=$GIT_DIR
@@ -83,17 +93,6 @@ if [ -f www/composer.json ] && [ ! -d www/vendor ]; then
   rm www/composer.phar
   export GIT_DIR=$GIT_DIR_ORIG
 fi
-
-#Rename mongo dir
-mv mongodb-linux-x86_64-$MONGO_VERSION mongo
-
-# update config files
-cp $LP_DIR/conf/httpd.conf $APACHE_PATH/conf
-cp $LP_DIR/conf/php.ini php
-
-# make php available on bin
-mkdir -p bin
-ln -s /app/php/bin/php bin/php
 
 cat >>boot.sh <<EOF
 for var in \`env|cut -f1 -d=\`; do
