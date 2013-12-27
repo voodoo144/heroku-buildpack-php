@@ -62,11 +62,27 @@ curl --silent --max-time 60 --location "$MONGO_URL" | tar xz
 echo "-----> Downloading vim"
 curl --silent --max-time 60 --location https://s3.amazonaws.com/heroku-jvm-buildpack-vi/vim-7.3.tar.gz --output vim.tar.gz
 mkdir vim && tar xzvf vim.tar.gz -C vim
+rm -rf vim.tar.gz
 echo "-----> Vim installed"
 
-echo "-----> Installing Composer"
-COMPOSER_URL="http://getcomposer.org/composer.phar"
-curl --silent --max-time 60 --location "$COMPOSER_URL" > www/composer.phar
+echo "-----> Installing zip extension"
+$BUILD_DIR/php/bin/pecl install zip
+echo "-----> Zip installed"
+
+
+if [ -f www/composer.json ] && [ ! -d www/vendor ]; then
+  GIT_DIR_ORIG=$GIT_DIR
+  unset GIT_DIR
+  echo "-----> Installing Composer dependencies"
+  COMPOSER_URL="http://getcomposer.org/composer.phar"
+  curl --silent --max-time 60 --location "$COMPOSER_URL" > www/composer.phar
+  cd www
+  LD_LIBRARY_PATH=$BUILD_DIR/php/lib/php $BUILD_DIR/php/bin/php -c $LP_DIR/conf/php.ini composer.phar install --prefer-source
+  rm -rf vendor/**/.git
+  cd $BUILD_DIR
+  rm www/composer.phar
+  export GIT_DIR=$GIT_DIR_ORIG
+fi
 
 #Rename mongo dir
 mv mongodb-linux-x86_64-$MONGO_VERSION mongo
@@ -79,8 +95,6 @@ cp $LP_DIR/conf/php.ini php
 mkdir -p bin
 ln -s /app/php/bin/php bin/php
 
-/app/php/bin/php composer.phar install
-
 cat >>boot.sh <<EOF
 for var in \`env|cut -f1 -d=\`; do
   echo "PassEnv \$var" >> /app/apache/conf/httpd.conf;
@@ -91,9 +105,6 @@ tail -F /app/apache/logs/error_log &
 tail -F /app/apache/logs/access_log &
 export LD_LIBRARY_PATH=/app/php/lib/php
 export PHP_INI_SCAN_DIR=/app/www
-export PATH=$PATH:/app/mongo/bin
-export PATH=$PATH:/app/vim/bin
-export PATH=$PATH:/app/php/bin
 
 echo "Launching apache"
 exec /app/apache/bin/httpd -DNO_DETACH
