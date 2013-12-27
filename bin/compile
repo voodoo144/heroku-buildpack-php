@@ -60,8 +60,23 @@ echo "-----> Get Mongo from $MONGO_URL"
 curl --silent --max-time 60 --location "$MONGO_URL" | tar xz
 
 echo "-----> Downloading vim"
-curl https://s3.amazonaws.com/heroku-jvm-buildpack-vi/vim-7.3.tar.gz --output vim.tar.gz
+curl --silent --max-time 60 --location https://s3.amazonaws.com/heroku-jvm-buildpack-vi/vim-7.3.tar.gz --output vim.tar.gz
 mkdir vim && tar xzvf vim.tar.gz -C vim
+echo "-----> Vim installed"
+
+if [ -f www/composer.json ] && [ ! -d www/vendor ]; then
+  GIT_DIR_ORIG=$GIT_DIR
+  unset GIT_DIR
+  echo "-----> Installing Composer dependencies"
+  COMPOSER_URL="http://getcomposer.org/composer.phar"
+  curl --silent --max-time 60 --location "$COMPOSER_URL" > www/composer.phar
+  cd www
+  LD_LIBRARY_PATH=$BUILD_DIR/php/ext $BUILD_DIR/php/bin/php -c $LP_DIR/conf/php.ini composer.phar install --prefer-source
+  rm -rf vendor/**/.git
+  cd $BUILD_DIR
+  rm www/composer.phar
+  export GIT_DIR=$GIT_DIR_ORIG
+fi
 
 #Rename mongo dir
 mv mongodb-linux-x86_64-$MONGO_VERSION mongo
