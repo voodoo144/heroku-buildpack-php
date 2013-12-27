@@ -66,7 +66,7 @@ rm -rf vim.tar.gz
 echo "-----> Vim installed"
 
 echo "-----> Installing zip extension"
-bin/pecl install zip
+php/bin/pecl install zip
 echo "-----> Zip installed"
 
 
