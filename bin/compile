@@ -81,7 +81,7 @@ ln -s /app/php/bin/php bin/php
   COMPOSER_URL="http://getcomposer.org/composer.phar"
   curl --silent --max-time 60 --location "$COMPOSER_URL" > www/composer.phar
   cd www
-  LD_LIBRARY_PATH=$BUILD_DIR/php/lib $BUILD_DIR/php/bin/php composer.phar install --prefer-source
+  $BUILD_DIR/php/bin/php composer.phar install --prefer-source
   rm -rf vendor/**/.git
   cd $BUILD_DIR
   rm www/composer.phar
